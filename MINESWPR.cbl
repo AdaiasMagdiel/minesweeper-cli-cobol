@@ -49,9 +49,9 @@
                ACCEPT WS-USER-CHOICE
 
                EVALUATE WS-USER-CHOICE
-                   WHEN 1
+                   WHEN "1"
                        EXIT PERFORM
-                   WHEN 2
+                   WHEN "2"
                        STOP RUN
                    WHEN OTHER
                        DISPLAY
