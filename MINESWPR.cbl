@@ -12,12 +12,19 @@
                    88 CELL-BOMB   VALUE 'B'.
        01 WS-DISPLAY-INDEXES.
            05 WS-ROW-DISPLAY PIC Z9.
+       01 WS-CLS.
+           05 WS-ESC-CHAR PIC X VALUE X"1B".
+           05 WS-FILLER   PIC X(3) VALUE "[2J".
+           05 WS-ESC-CH2  PIC X VALUE X"1B".
+           05 WS-FILLER   PIC X(2) VALUE "[H".
 
        PROCEDURE DIVISION.
        PERFORM DISPLAY-BANNER.
        PERFORM DISPLAY-MENU.
-
-       DISPLAY "THE GAME!".
+       
+       DISPLAY WS-CLS.
+       PERFORM CLEAR-BOARD.
+       PERFORM DISPLAY-BOARD.
 
        STOP RUN.
 
@@ -52,6 +59,7 @@
                    WHEN "1"
                        EXIT PERFORM
                    WHEN "2"
+                       DISPLAY "BYE! HOPE TO SEE YOU SOON."
                        STOP RUN
                    WHEN OTHER
                        DISPLAY
@@ -68,6 +76,7 @@
            END-PERFORM.
 
        DISPLAY-BOARD.
+           DISPLAY "     ABCDEFGHIJ".
            DISPLAY "     ----------".
            PERFORM VARYING WS-ROW-IDX FROM 1 BY 1 UNTIL WS-ROW-IDX > 10
                MOVE WS-ROW-IDX TO WS-ROW-DISPLAY
