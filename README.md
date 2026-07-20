@@ -4,13 +4,13 @@ A basic Minesweeper game for the command line, written in COBOL. This is a learn
 
 ## Status
 
-Early stage. Currently the board is initialized with fixed cell states and printed to the terminal; no interactive gameplay yet.
+Early stage. The game shows a banner and menu (play/exit) with input validation. Board initialization and rendering are implemented but not yet wired into the game loop; no interactive gameplay yet.
 
 ## Board legend
 
 | Symbol | Meaning |
 | ------ | ------- |
-| `O`    | Cleared cell |
+| `■`    | Hidden cell |
 | ` `    | Empty cell |
 | `X`    | Bomb |
 
@@ -27,7 +27,8 @@ cobc -x -o minesweeper MINESWPR.cbl
 
 ## Roadmap
 
+- [ ] Wire board init/display into the game loop
 - [ ] Random bomb placement
-- [ ] User input / interaction
+- [ ] Cell reveal input / interaction
 - [ ] Win/loss detection
 - [ ] Cell flagging
