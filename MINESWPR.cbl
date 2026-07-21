@@ -52,10 +52,17 @@
            END-PERFORM.
 
        ASK-BOARD-CHOICE.
-           DISPLAY "CHOOSE A COLUMN (A-J): " WITH NO ADVANCING.
+           DISPLAY
+               "CHOOSE A COLUMN (A-J), OR "
+               "TYPE X TO EXIT: "
+               WITH NO ADVANCING.
            PERFORM UNTIL 1 = 0
                ACCEPT WS-COL-INPUT-RAW
                EVALUATE WS-COL-INPUT-RAW
+                   WHEN 'X'
+                   WHEN 'x'
+                       STOP RUN
+
                    WHEN 'A'
                    WHEN 'a'
                        MOVE 1 TO WS-COL-INPUT
@@ -98,19 +105,28 @@
                        EXIT PERFORM
                    WHEN OTHER
                        DISPLAY
-                           "PLEASE, CHOOSE A VALID COLUMN (A-J): "
+                           "PLEASE, CHOOSE A VALID COLUMN (A-J), OR "
+                           "TYPE X TO EXIT: "
                            WITH NO ADVANCING
                END-EVALUATE
            END-PERFORM.
 
-           DISPLAY "CHOOSE A ROW (1 TO 10): " WITH NO ADVANCING.
+           DISPLAY
+               "CHOOSE A ROW (1 TO 10), OR "
+               "TYPE 0 TO EXIT: "
+               WITH NO ADVANCING.
            PERFORM UNTIL 1 = 0
                ACCEPT WS-ROW-INPUT
                EVALUATE WS-ROW-INPUT
+                   WHEN 0
+                       STOP RUN
+
                    WHEN 1 THRU 10
                        EXIT PERFORM
                    WHEN OTHER
-                       DISPLAY "PLEASE, CHOOSE A VALID ROW (1 TO 10): "
+                       DISPLAY
+                           "PLEASE, CHOOSE A VALID ROW (1 TO 10), OR "
+                           "TYPE 0 TO EXIT: "
                            WITH NO ADVANCING
                END-EVALUATE
            END-PERFORM.
