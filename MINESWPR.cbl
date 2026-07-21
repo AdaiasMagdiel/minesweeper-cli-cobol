@@ -7,9 +7,9 @@
        01 WS-BOARD OCCURS 10 TIMES INDEXED BY WS-ROW-IDX.
            05 WS-BOARD-ROW OCCURS 10 TIMES INDEXED BY WS-COL-IDX.
                10 WS-CELL-STATE PIC X.
-                   88 CELL-HIDDEN VALUE 'H'.
-                   88 CELL-EMPTY  VALUE 'E'.
-                   88 CELL-BOMB   VALUE 'B'.
+                   88 WS-CELL-HIDDEN VALUE 'H'.
+                   88 WS-CELL-EMPTY  VALUE 'E'.
+                   88 WS-CELL-BOMB   VALUE 'B'.
        01 WS-DISPLAY-INDEXES.
            05 WS-ROW-DISPLAY PIC Z9.
        01 WS-CLS.
@@ -17,21 +17,89 @@
            05 WS-FILLER   PIC X(3) VALUE "[2J".
            05 WS-ESC-CH2  PIC X VALUE X"1B".
            05 WS-FILLER   PIC X(2) VALUE "[H".
+       01 WS-GAME-STATUS PIC X VALUE 'R'.
+           88 WS-GAME-OVER     VALUE 'O'.
+       01 WS-ROW-INPUT     PIC 99.
+       01 WS-COL-INPUT     PIC 99.
+       01 WS-COL-INPUT-RAW PIC X.
+       01 WS-BOMBS-TABLE.
+           05 WS-BOMBS OCCURS 5 TIMES.
+               10 WS-BOMB-ROW  PIC 99. 
+               10 WS-BOMB-COL  PIC 99.
+       01 WS-I         PIC 99.
+       01 WS-PERFORM-J         PIC 99.
 
        PROCEDURE DIVISION.
        PERFORM DISPLAY-BANNER.
        PERFORM DISPLAY-MENU.
-       
-       DISPLAY WS-CLS.
-       PERFORM CLEAR-BOARD.
-       PERFORM DISPLAY-BOARD.
+
+       PERFORM GAME.
 
        STOP RUN.
 
+       GAME.
+           MOVE 'R' TO WS-GAME-STATUS.
+
+           PERFORM CLEAR-BOARD.
+           PERFORM GENERATE-BOMBS.
+
+           PERFORM UNTIL WS-GAME-OVER
+               DISPLAY WS-CLS
+               PERFORM DISPLAY-BOARD
+               DISPLAY " "
+               PERFORM ASK-BOARD-CHOICE
+
+           END-PERFORM.
+
+       ASK-BOARD-CHOICE.
+           DISPLAY "CHOICE A COL (A TO J): " WITH NO ADVANCING.
+           PERFORM UNTIL 1 = 0
+               ACCEPT WS-COL-INPUT-RAW
+               EVALUATE WS-COL-INPUT-RAW
+                   WHEN 'A' THRU 'J'
+                       EXIT PERFORM
+                   WHEN 'a' THRU 'j'
+                       MOVE FUNCTION UPPER-CASE (WS-COL-INPUT-RAW)
+                           TO WS-COL-INPUT-RAW
+                       EXIT PERFORM
+                   WHEN OTHER
+                       DISPLAY "PLEASE, CHOICE A VALID COL (A TO J): "
+                           WITH NO ADVANCING
+               END-EVALUATE
+           END-PERFORM.
+
+           DISPLAY "CHOICE A ROW (1 TO 10): " WITH NO ADVANCING.
+           PERFORM UNTIL 1 = 0
+               ACCEPT WS-ROW-INPUT
+               EVALUATE WS-ROW-INPUT
+                   WHEN 1 THRU 10
+                       EXIT PERFORM
+                   WHEN OTHER
+                       DISPLAY "PLEASE, CHOICE A VALID ROW (1 TO 10): "
+                           WITH NO ADVANCING
+               END-EVALUATE
+           END-PERFORM.
+
+           EVALUATE WS-COL-INPUT-RAW
+               WHEN 'A' WHEN 'a' MOVE  1 TO WS-COL-INPUT
+               WHEN 'B' WHEN 'b' MOVE  2 TO WS-COL-INPUT
+               WHEN 'C' WHEN 'c' MOVE  3 TO WS-COL-INPUT
+               WHEN 'D' WHEN 'd' MOVE  4 TO WS-COL-INPUT
+               WHEN 'E' WHEN 'e' MOVE  5 TO WS-COL-INPUT
+               WHEN 'F' WHEN 'f' MOVE  6 TO WS-COL-INPUT
+               WHEN 'G' WHEN 'g' MOVE  7 TO WS-COL-INPUT
+               WHEN 'H' WHEN 'h' MOVE  8 TO WS-COL-INPUT
+               WHEN 'I' WHEN 'i' MOVE  9 TO WS-COL-INPUT
+               WHEN 'J' WHEN 'j' MOVE 10 TO WS-COL-INPUT
+               WHEN OTHER
+                   DISPLAY "IT SHOULD NOT HAPPEN!"
+                   STOP RUN
+           END-EVALUATE.
+
        DISPLAY-BANNER.
-           DISPLAY "                ___ __  __  __  _".
-           DISPLAY "               / _//__\|  \/__\| |".
-           DISPLAY "              | \_| \/ | -< \/ | |_".
+           DISPLAY "                ___ __  __  __  _   ".
+           DISPLAY "               / _//__\|  \/__\| |  ".
+           DISPLAY "              | \_| \/ | -< \/ | |_ ".
            DISPLAY "               \__/\__/|__/\__/|___|".
            DISPLAY
                " __ __ _ __  _ ___  __  _   _  ___ ___ ___ ___ ___ ".
@@ -68,11 +136,20 @@
                END-EVALUATE
            END-PERFORM.
 
+       GENERATE-BOMBS.
+           PERFORM VARYING WS-I FROM 1 BY 1 UNTIL WS-I > 5
+               COMPUTE WS-BOMB-ROW (WS-I) = 
+                   (FUNCTION RANDOM * 10) + 1
+
+               COMPUTE WS-BOMB-COL (WS-I) = 
+                   (FUNCTION RANDOM * 10) + 1
+           END-PERFORM.
+
        CLEAR-BOARD.
            PERFORM VARYING WS-ROW-IDX FROM 1 BY 1 UNTIL WS-ROW-IDX > 10
                AFTER WS-COL-IDX FROM 1 BY 1 UNTIL WS-COL-IDX > 10
 
-               SET CELL-HIDDEN (WS-ROW-IDX, WS-COL-IDX) TO TRUE
+               SET WS-CELL-HIDDEN (WS-ROW-IDX, WS-COL-IDX) TO TRUE
            END-PERFORM.
 
        DISPLAY-BOARD.
@@ -85,11 +162,11 @@
                PERFORM VARYING WS-COL-IDX FROM 1 BY 1
                        UNTIL WS-COL-IDX > 10
                    EVALUATE TRUE
-                       WHEN CELL-HIDDEN (WS-ROW-IDX, WS-COL-IDX)
+                       WHEN WS-CELL-HIDDEN (WS-ROW-IDX, WS-COL-IDX)
                            DISPLAY "■" WITH NO ADVANCING
-                       WHEN CELL-EMPTY (WS-ROW-IDX, WS-COL-IDX)
+                       WHEN WS-CELL-EMPTY (WS-ROW-IDX, WS-COL-IDX)
                            DISPLAY " " WITH NO ADVANCING
-                       WHEN CELL-BOMB (WS-ROW-IDX, WS-COL-IDX)
+                       WHEN WS-CELL-BOMB (WS-ROW-IDX, WS-COL-IDX)
                            DISPLAY "X" WITH NO ADVANCING
                    END-EVALUATE
                END-PERFORM
