@@ -27,6 +27,11 @@
                10 WS-BOMB-ROW  PIC 99. 
                10 WS-BOMB-COL  PIC 99.
        01 WS-I         PIC 99.
+       01 WS-J         PIC 99.
+       01 WS-ROW-START PIC 99.
+       01 WS-ROW-END   PIC 99.
+       01 WS-COL-START PIC 99.
+       01 WS-COL-END   PIC 99.
        01 WS-BOMB-FOUND PIC X VALUE 'N'.
            88 WS-BOMB-FOUND-YES VALUE 'Y'.
            88 WS-BOMB-FOUND-NO  VALUE 'N'.
@@ -67,8 +72,29 @@
                END-PERFORM
 
                IF WS-BOMB-FOUND-NO
-                   SET WS-CELL-EMPTY (WS-ROW-INPUT, WS-COL-INPUT)
-                       TO TRUE
+                   COMPUTE WS-ROW-START = FUNCTION
+                       MAX(1, WS-ROW-INPUT - 1)
+                   COMPUTE WS-ROW-END   = FUNCTION
+                       MIN(10, WS-ROW-INPUT + 1)
+                   COMPUTE WS-COL-START = FUNCTION
+                       MAX(1, WS-COL-INPUT - 1)
+                   COMPUTE WS-COL-END   = FUNCTION
+                       MIN(10, WS-COL-INPUT + 1)
+
+                   PERFORM VARYING WS-I
+                       FROM WS-ROW-START
+                       BY 1 UNTIL WS-I > WS-ROW-END
+
+                       PERFORM VARYING WS-J
+                           FROM WS-COL-START
+                           BY 1 UNTIL WS-J > WS-COL-END
+
+                           IF NOT WS-CELL-BOMB (WS-I, WS-J)
+                               SET WS-CELL-EMPTY (WS-I, WS-J) TO TRUE
+                           END-IF
+
+                       END-PERFORM
+                   END-PERFORM
                END-IF
            END-PERFORM.
 
