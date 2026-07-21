@@ -52,49 +52,68 @@
            END-PERFORM.
 
        ASK-BOARD-CHOICE.
-           DISPLAY "CHOICE A COL (A TO J): " WITH NO ADVANCING.
+           DISPLAY "CHOOSE A COLUMN (A-J): " WITH NO ADVANCING.
            PERFORM UNTIL 1 = 0
                ACCEPT WS-COL-INPUT-RAW
                EVALUATE WS-COL-INPUT-RAW
-                   WHEN 'A' THRU 'J'
+                   WHEN 'A'
+                   WHEN 'a'
+                       MOVE 1 TO WS-COL-INPUT
                        EXIT PERFORM
-                   WHEN 'a' THRU 'j'
-                       MOVE FUNCTION UPPER-CASE (WS-COL-INPUT-RAW)
-                           TO WS-COL-INPUT-RAW
+                   WHEN 'B'
+                   WHEN 'b'
+                       MOVE 2 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'C'
+                   WHEN 'c'
+                       MOVE 3 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'D'
+                   WHEN 'd'
+                       MOVE 4 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'E'
+                   WHEN 'e'
+                       MOVE 5 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'F'
+                   WHEN 'f'
+                       MOVE 6 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'G'
+                   WHEN 'g'
+                       MOVE 7 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'H'
+                   WHEN 'h'
+                       MOVE 8 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'I'
+                   WHEN 'i'
+                       MOVE 9 TO WS-COL-INPUT
+                       EXIT PERFORM
+                   WHEN 'J'
+                   WHEN 'j'
+                       MOVE 10 TO WS-COL-INPUT
                        EXIT PERFORM
                    WHEN OTHER
-                       DISPLAY "PLEASE, CHOICE A VALID COL (A TO J): "
+                       DISPLAY
+                           "PLEASE, CHOOSE A VALID COLUMN (A-J): "
                            WITH NO ADVANCING
                END-EVALUATE
            END-PERFORM.
 
-           DISPLAY "CHOICE A ROW (1 TO 10): " WITH NO ADVANCING.
+           DISPLAY "CHOOSE A ROW (1 TO 10): " WITH NO ADVANCING.
            PERFORM UNTIL 1 = 0
                ACCEPT WS-ROW-INPUT
                EVALUATE WS-ROW-INPUT
                    WHEN 1 THRU 10
                        EXIT PERFORM
                    WHEN OTHER
-                       DISPLAY "PLEASE, CHOICE A VALID ROW (1 TO 10): "
+                       DISPLAY "PLEASE, CHOOSE A VALID ROW (1 TO 10): "
                            WITH NO ADVANCING
                END-EVALUATE
            END-PERFORM.
-
-           EVALUATE WS-COL-INPUT-RAW
-               WHEN 'A' WHEN 'a' MOVE  1 TO WS-COL-INPUT
-               WHEN 'B' WHEN 'b' MOVE  2 TO WS-COL-INPUT
-               WHEN 'C' WHEN 'c' MOVE  3 TO WS-COL-INPUT
-               WHEN 'D' WHEN 'd' MOVE  4 TO WS-COL-INPUT
-               WHEN 'E' WHEN 'e' MOVE  5 TO WS-COL-INPUT
-               WHEN 'F' WHEN 'f' MOVE  6 TO WS-COL-INPUT
-               WHEN 'G' WHEN 'g' MOVE  7 TO WS-COL-INPUT
-               WHEN 'H' WHEN 'h' MOVE  8 TO WS-COL-INPUT
-               WHEN 'I' WHEN 'i' MOVE  9 TO WS-COL-INPUT
-               WHEN 'J' WHEN 'j' MOVE 10 TO WS-COL-INPUT
-               WHEN OTHER
-                   DISPLAY "IT SHOULD NOT HAPPEN!"
-                   STOP RUN
-           END-EVALUATE.
 
        DISPLAY-BANNER.
            DISPLAY "                ___ __  __  __  _   ".
@@ -118,7 +137,7 @@
            DISPLAY "2. EXIT".
            DISPLAY " ".
 
-           DISPLAY "ENTER A OPTION: " WITH NO ADVANCING.
+           DISPLAY "ENTER AN OPTION: " WITH NO ADVANCING.
            
            PERFORM UNTIL 1 = 0
                ACCEPT WS-USER-CHOICE
@@ -131,7 +150,7 @@
                        STOP RUN
                    WHEN OTHER
                        DISPLAY
-                           "PLEASE, CHOICE A VALID OPTION (1 OR 2): "
+                           "PLEASE, CHOOSE A VALID OPTION (1 OR 2): "
                            WITH NO ADVANCING
                END-EVALUATE
            END-PERFORM.
