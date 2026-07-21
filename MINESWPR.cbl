@@ -27,7 +27,6 @@
                10 WS-BOMB-ROW  PIC 99. 
                10 WS-BOMB-COL  PIC 99.
        01 WS-I         PIC 99.
-       01 WS-PERFORM-J         PIC 99.
 
        PROCEDURE DIVISION.
        PERFORM DISPLAY-BANNER.
