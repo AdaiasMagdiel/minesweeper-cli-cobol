@@ -27,6 +27,9 @@
                10 WS-BOMB-ROW  PIC 99. 
                10 WS-BOMB-COL  PIC 99.
        01 WS-I         PIC 99.
+       01 WS-BOMB-FOUND PIC X VALUE 'N'.
+           88 WS-BOMB-FOUND-YES VALUE 'Y'.
+           88 WS-BOMB-FOUND-NO  VALUE 'N'.
 
        PROCEDURE DIVISION.
        PERFORM DISPLAY-BANNER.
@@ -41,14 +44,39 @@
 
            PERFORM CLEAR-BOARD.
            PERFORM GENERATE-BOMBS.
+           PERFORM DEBUG-DISPLAY-BOMBS.
 
            PERFORM UNTIL WS-GAME-OVER
                DISPLAY WS-CLS
                PERFORM DISPLAY-BOARD
+
                DISPLAY " "
+
                PERFORM ASK-BOARD-CHOICE
 
+               SET WS-BOMB-FOUND-NO TO TRUE
+               PERFORM VARYING WS-I FROM 1 BY 1 UNTIL WS-I > 5
+                   IF WS-ROW-INPUT = WS-BOMB-ROW (WS-I)
+                      AND
+                      WS-COL-INPUT = WS-BOMB-COL (WS-I)
+                       SET WS-CELL-BOMB (WS-ROW-INPUT, WS-COL-INPUT)
+                           TO TRUE
+                       SET WS-BOMB-FOUND-YES TO TRUE
+                       SET WS-GAME-OVER TO TRUE
+                   END-IF
+               END-PERFORM
+
+               IF WS-BOMB-FOUND-NO
+                   SET WS-CELL-EMPTY (WS-ROW-INPUT, WS-COL-INPUT)
+                       TO TRUE
+               END-IF
            END-PERFORM.
+
+           DISPLAY WS-CLS.
+           PERFORM DISPLAY-BOARD.
+
+           DISPLAY " ".
+           DISPLAY "BOMB! YOU LOST!".
 
        ASK-BOARD-CHOICE.
            DISPLAY
@@ -177,6 +205,13 @@
 
                COMPUTE WS-BOMB-COL (WS-I) = 
                    (FUNCTION RANDOM * 10) + 1
+           END-PERFORM.
+       
+       DEBUG-DISPLAY-BOMBS.
+           PERFORM VARYING WS-I FROM 1 BY 1 UNTIL WS-I > 5
+               DISPLAY "BOMB ("
+                   WS-BOMB-ROW (WS-I) ", " WS-BOMB-COL (WS-I)
+                   ")"
            END-PERFORM.
 
        CLEAR-BOARD.
